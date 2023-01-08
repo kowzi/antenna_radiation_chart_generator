@@ -1,0 +1,2 @@
+select s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data1mV as t on s.frequency_MHz = t.frequency_MHz;
+
