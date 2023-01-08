@@ -12,13 +12,13 @@ import glob             # finding files
 import pandas as pd     # importing csv file to dataframe
 import sqlite3          # accessing Sqlite3
 
-def dut_meas_csv2sqlite(filename_meas_csv="",filename_db="antmeas.db", db_table="dut_meas"):
+def dut_meas_csv2sqlite(filepath_name="",filename_db="antmeas.db", db_table="dut_meas"):
 
     #filename_meas_csv = 'Horn_vs_Dipole_01EE.csv'
+    filename_meas_csv = os.path.split(filepath_name)[1]
 
-    df = pd.read_csv(filename_meas_csv,header=1,index_col=0)
-
-    csv_date  = os.path.getctime(filename_meas_csv)
+    df = pd.read_csv(filepath_name,header=1,index_col=0)
+    csv_date  = os.path.getctime(filepath_name)
     csv_index = df.index
     csv_columns = df.columns
 
@@ -64,10 +64,12 @@ if __name__ == "__main__":
     #    os.remove(db_file)
     #    print('Removed old file:'+db_file)
 
-    csvfiles = glob.glob('*.csv', recursive=False)
+    #csvfiles = glob.glob('*.csv', recursive=False)
+    csvfiles = glob.glob('./**/*.csv', recursive=True)
     cnt = 1
     for csvfile in csvfiles:
         print('Processing...[%d/%d] %s'%(cnt,len(csvfiles),csvfile))
+        #print(os.path.split(csvfile)[1])
         dut_meas_csv2sqlite(csvfile,db_file,'dut_meas')
         cnt=cnt+1
 
