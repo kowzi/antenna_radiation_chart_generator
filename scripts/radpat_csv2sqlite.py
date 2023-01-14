@@ -65,7 +65,7 @@ if __name__ == "__main__":
     #    print('Removed old file:'+db_file)
 
     #csvfiles = glob.glob('*.csv', recursive=False)
-    csvfiles = glob.glob('./**/*.csv', recursive=True)
+    csvfiles = glob.glob('../input/**/*.csv', recursive=True)
     cnt = 1
     for csvfile in csvfiles:
         print('Processing...[%d/%d] %s'%(cnt,len(csvfiles),csvfile))
