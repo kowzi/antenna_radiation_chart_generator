@@ -6,7 +6,7 @@ set_sitecal.py         --> generating the calibration value. this is a final pro
 
 radpat_csv2sqlite.py   --> importing .csv files in the ./input to a sqlite file
 
-get_dutgain.py         --> calucurating the dBi value of the dut antennas defined in the file (imported with radpat_csv2sqlite.py)
+get_dutgain.py         --> calculating the dBi value of the dut antennas defined in the file (imported with radpat_csv2sqlite.py)
 
 genfig_polar_sql.mlx   --> generating the figure files as demand
 genfig_polar_sql_comparison.mlx  --> for a comparison
