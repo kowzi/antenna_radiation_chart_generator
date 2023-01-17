@@ -1,4 +1,4 @@
-function genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, freq_plan, saveformat, alt_filenames)
+function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, freq_plan, saveformat, alt_filenames, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
 %UNTITLED Summary of this function goes here
 %   input_sqlite    ... sqlite file to be read
 %   output_dir      ... output directory
@@ -17,11 +17,11 @@ function genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, freq_p
     
         % graph property
         ax = polaraxes;
-        ax.ColorOrder = [0 0 1; 0 0 0];          % https://jp.mathworks.com/help/matlab/creating_plots/defining-the-color-of-lines-for-plotting.html
-        LineStyleOrder = ["-" "--"];
-        LineWidthOrder = [2; 1];
+        ax.ColorOrder = cmdColorOrder;          % https://jp.mathworks.com/help/matlab/creating_plots/defining-the-color-of-lines-for-plotting.html
+        LineStyleOrder = cmdLineStyleOrder;
+        LineWidthOrder = cmdLineWidthOrder;
         legend_titles = {};
-    
+
         for n=1:1:length(filenames)
             %sqlquery = "select file_name, frequency_MHz, angle, antenna_gain_dBi from dut_gains as d where ROUND(d.frequency_MHz,1)>3999.0 and ROUND(d.frequency_MHz,1)<4000.0 and d.file_name='Horn_vs_Monopole_E03_01EE.csv'";
             sqlquery = sprintf("select file_name, frequency_MHz, angle, antenna_gain_dBi from dut_gains as d" + ...
@@ -48,11 +48,19 @@ function genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, freq_p
     
                 if contains(filenames(n),'VV_')
                     %freq    = [sprintf('%s: %.0f MHz - H-Plane',replace(filenames(n),".csv",""), dut_antennas.frequency_MHz(2))];
-                    freq    = [sprintf('%s: %.0f MHz - H-Plane', alt_filenames(n), dut_antennas.frequency_MHz(2))];
+                    freq    = [sprintf('%s: %.0f MHz - H-Plane {\theta}', alt_filenames(n), dut_antennas.frequency_MHz(2))];
                     %p.Color = "#0072BD";
                 elseif contains(filenames(n),'HH_')
                     %freq    = [sprintf('%s: %.0f MHz - E-Plane',replace(filenames(n),".csv",""), dut_antennas.frequency_MHz(2))];
-                    freq    = [sprintf('%s: %.0f MHz - E-Plane', alt_filenames(n), dut_antennas.frequency_MHz(2))];
+                    freq    = [sprintf('%s: %.0f MHz - E-Plane {\theta}', alt_filenames(n), dut_antennas.frequency_MHz(2))];
+                    %p.Color = "#D95319";
+                elseif contains(filenames(n),'VH_')
+                    %freq    = [sprintf('%s: %.0f MHz - E-Plane',replace(filenames(n),".csv",""), dut_antennas.frequency_MHz(2))];
+                    freq    = [sprintf('%s: %.0f MHz - E-Plane {\phi}', alt_filenames(n), dut_antennas.frequency_MHz(2))];
+                    %p.Color = "#D95319";
+                elseif contains(filenames(n),'HV_')
+                    %freq    = [sprintf('%s: %.0f MHz - E-Plane',replace(filenames(n),".csv",""), dut_antennas.frequency_MHz(2))];
+                    freq    = [sprintf('%s: %.0f MHz - H-Plane {\phi}', alt_filenames(n), dut_antennas.frequency_MHz(2))];
                     %p.Color = "#D95319";
                 else
                     %freq    = [sprintf('%s: %.0f MHz ',replace(filenames(n),".csv",""), dut_antennas.frequency_MHz(2))];
