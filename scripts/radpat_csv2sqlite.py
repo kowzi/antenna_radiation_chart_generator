@@ -59,13 +59,13 @@ def dut_meas_csv2sqlite(filepath_name="",filename_db="antmeas.db", db_table="dut
     conndb.close()
 
 if __name__ == "__main__":
-    db_file = '../antmeas.db'
+    db_file = './output/antmeas.db'
     #if os.path.exists(db_file):
     #    os.remove(db_file)
     #    print('Removed old file:'+db_file)
 
     #csvfiles = glob.glob('*.csv', recursive=False)
-    csvfiles = glob.glob('../input/**/*.csv', recursive=True)
+    csvfiles = glob.glob('./input/**/*.csv', recursive=True)
     cnt = 1
     for csvfile in csvfiles:
         print('Processing...[%d/%d] %s'%(cnt,len(csvfiles),csvfile))

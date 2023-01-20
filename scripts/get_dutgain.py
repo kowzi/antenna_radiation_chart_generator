@@ -25,6 +25,6 @@ def sqlcmd_set_dut_gains(filename_db="sitecal.db", tbname_dut_gains_dBi="dut_gai
     conndb.commit()
 
 if __name__ == "__main__":
-    db_file = '../antmeas.db'
+    db_file = './output/antmeas.db'
     sqlcmd_set_dut_gains(db_file)
 

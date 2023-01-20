@@ -27,6 +27,6 @@ def sqlcmd_set_site_calvals(filename_db="sitecal.db"):
     conndb.commit()
 
 if __name__ == "__main__":
-    db_file = '../antmeas.db'
+    db_file = './output/antmeas.db'
     sqlcmd_set_site_calvals(db_file)
 
