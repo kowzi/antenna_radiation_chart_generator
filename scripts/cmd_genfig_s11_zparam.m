@@ -10,6 +10,8 @@ function cmd_genfig_s11_zparam(output_dir, filenames, cmdXlim, format_style, sav
     % https://jp.mathworks.com/help/matlab/matlab_prog/pass-contents-of-cell-arrays-to-functions.html
     %line_styles = {"b-" "Color" "[0 0 1]" "LineWidth" 2; "b-" "Color" "[0 0 0]" "LineWidth" 1;};
 
+    filename_suffix = '_s11-zparam';
+
     xlim_min = cmdXlim(1); 
     xlim_max = cmdXlim(2);
 
@@ -73,15 +75,15 @@ function cmd_genfig_s11_zparam(output_dir, filenames, cmdXlim, format_style, sav
     %% saving a file -----
     for k=1:1:length(saveformat)
         if strcmp(saveformat(k),".fig")
-            savefig(gcf,output_dir_filename+"/"+savefilename+".fig");
+            savefig(gcf,output_dir_filename+"/"+savefilename+filename_suffix+".fig");
         elseif strcmp(saveformat(k),".csv")
-            csvbuff_matrix = ['angle[deg]' strcat(savefilename,'[dBi]'); angle_deg antenna_gain_dBi];
-            writematrix(csvbuff_matrix,output_dir_filename+"/"+savefilename+"_dut_gains.csv");
+            csvbuff_matrix = ['Frequency [Hz]' 'Z50(ohm)' 'Z50(real)' 'Z50(imaginary)'; sp0_freq sp0_z11_abs sp0_z11_real sp0_z11_imag];
+            writematrix(csvbuff_matrix,output_dir_filename+"/"+savefilename+filename_suffix+".csv");
         else
-            exportgraphics(gcf,output_dir_filename+"/"+savefilename+saveformat(k));
+            exportgraphics(gcf,output_dir_filename+"/"+savefilename+filename_suffix+saveformat(k));
         end
     end
-    clf;
+
 
 
 

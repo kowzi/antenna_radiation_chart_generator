@@ -7,61 +7,43 @@ function cmd_genfig_s11_smith(output_dir, filenames, cmdXlim_mode, cmdXlim_GHz, 
 %   saveformat      ... output file format. ex. = [".png"; ".emf"; ".fig"; ".csv";];
 %   alt_filenames   ... alternate filename used for the legend. ex. = ["Proposed 1"; "Proposed 2";];
     
-    % https://jp.mathworks.com/help/matlab/matlab_prog/pass-contents-of-cell-arrays-to-functions.html
-    %line_styles = {"b-" "Color" "[0 0 1]" "LineWidth" 2; "b-" "Color" "[0 0 0]" "LineWidth" 1;};
+    % Smith plot:
+    %   add a line:   https://jp.mathworks.com/help/rf/ref/smithplot.add.html
+
+    filename_suffix = '_s11-smith';
 
     f=figure;
     hold on;
 
-    for n=1:1:length(filenames)
-
-        sp0_org         = sparameters(filenames(n));
-        sp0_freq_org    = sp0_org.Frequencies;
-
-        if(cmdXlim_mode=="auto")
-            sp0_freq        = sp0_freq_org(1):1e6:sp0_freq_org(end);        % New frequency plan for the interpolation with 1 MHz
-            sp0             = rfinterp1(sp0_org, sp0_freq);                 % Interpolation process
-            sp0_rfparam     = rfparam(sp0,1,1);
-
-        elseif(cmdXlim_mode=="man")
-            sp0_freq        = sp0_freq_org(1):1e6:sp0_freq_org(end);        % New frequency plan for the interpolation with 1 MHz
-            sp0             = rfinterp1(sp0_org, sp0_freq);                 % Interpolation process
-            sp0_rfparam     = rfparam(sp0,1,1);
-            [sp0_freq, sp0_rfparam] = rfparam_rangecut(cmdXlim_GHz(1)*1e9,cmdXlim_GHz(2)*1e9,sp0_freq,sp0_rfparam);
-        end
-
-        h = smithplot(sp0.Frequencies, rfparam(sp0,1,1),'GridType','ZY');
-        h.LineWidth     = cmdLineWidthOrder(n);
-        h.LineStyle     = cmdLineStyleOrder(n);
-        h.Marker        = {'none', 'o', 'square'};
-        h.FontName      = 'Times New Roman';
-        h.GridLineWidth = 0.5;
+    sp0_org         = sparameters(filenames(1));
+    sp0_freq_org    = sp0_org.Frequencies;
+    sp0_freq        = sp0_freq_org(1):1e6:sp0_freq_org(end);        % New frequency plan for the interpolation with 1 MHz
+    sp0             = rfinterp1(sp0_org, sp0_freq);                 % Interpolation process
+    sp0_rfparam     = rfparam(sp0,1,1);
+    if(cmdXlim_mode=="man")
+        [sp0_freq, sp0_rfparam] = rfparam_rangecut(cmdXlim_GHz(1)*1e9,cmdXlim_GHz(2)*1e9,sp0_freq,sp0_rfparam);
     end
+    s = smithplot(sp0_freq, sp0_rfparam,'GridType','ZY');
 
-    smithplot(sp0_freq(1),sp0_rfparam(1));
-    smithplot(sp0_freq(end),sp0_rfparam(end));
+    %Adding lines in smith plot:   https://jp.mathworks.com/help/rf/ref/smithplot.add.html
+    add(s,sp0_freq(1),sp0_rfparam(1));
+    add(s,sp0_freq(end),sp0_rfparam(end));
 
-  
+    s.LegendLabels  = {filenames(1), append('start:',string(sp0_freq(1)/1e9)," GHz"), append('stop:',string(sp0_freq(end)/1e9)," GHz")}; 
+    s.LineWidth     = 1.8*cmdLineWidthOrder;
+    s.LineStyle     = cmdLineStyleOrder;
+    s.Marker        = {'none', 'o', 'square'};
+    s.FontName      = 'Times New Roman';
+    s.GridLineWidth = 0.5;
+
     if(contains(format_style,"ieee"))
-        ax = gca;   % set the aexes property to ax.
-        %set(ax,'FontName','Times New Roman','XMinorGrid','off','YMinorGrid','off','ZMinorGrid','off','FontSize',19,'FontWeight','bold','LineWidth',1,'ZGrid','on', 'XTick', xlim_min:1:xlim_max);
-        ax.ColorOrder = cmdColorOrder;
-        %ax.LineStyleOrder = {'-','-'};
-        box on;
-        axis on;
-        grid off;
+        s.ColorOrder    = [0 0.2235 0.3705; 0 0 1; 1 0 0];
     else
-        %ax = gca;   % set the aexes property to ax.
-        %set(ax,'FontSize',19,'LineWidth',1,'XTick', xlim_min:1:xlim_max);
-        box on;
-        axis on;
-        grid on;
-        grid minor;
     end
 
     f.Position = [0 0 650 650];
     %daspect([1 1 1]);
-    pbaspect([1 1 1]);
+    pbaspect([1 1 1]);    
 
     savefilename = replace(filenames(1),".","");
     output_dir_filename = output_dir+"/"+savefilename;
@@ -72,16 +54,14 @@ function cmd_genfig_s11_smith(output_dir, filenames, cmdXlim_mode, cmdXlim_GHz, 
     %% saving a file -----
     for k=1:1:length(saveformat)
         if strcmp(saveformat(k),".fig")
-            savefig(gcf,output_dir_filename+"/"+savefilename+".fig");
+            savefig(gcf,output_dir_filename+"/"+savefilename+filename_suffix+".fig");
         elseif strcmp(saveformat(k),".csv")
-            csvbuff_matrix = ['angle[deg]' strcat(savefilename,'[dBi]'); angle_deg antenna_gain_dBi];
-            writematrix(csvbuff_matrix,output_dir_filename+"/"+savefilename+"_dut_gains.csv");
+            csvbuff_matrix = ['Frequency [Hz]' 'S11[real/imag]'; sp0_freq string(transpose(sp0_rfparam))];
+            writematrix(csvbuff_matrix,output_dir_filename+"/"+savefilename+filename_suffix+".csv");
         else
-            exportgraphics(gcf,output_dir_filename+"/"+savefilename+saveformat(k));
+            exportgraphics(gcf,output_dir_filename+"/"+savefilename+filename_suffix+saveformat(k));
         end
     end
-    clf;
-
 
 
 end

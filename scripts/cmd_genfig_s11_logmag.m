@@ -10,6 +10,7 @@ function cmd_genfig_s11_logmag(output_dir, filenames, cmdXlim, format_style, sav
     % https://jp.mathworks.com/help/matlab/matlab_prog/pass-contents-of-cell-arrays-to-functions.html
     %line_styles = {"b-" "Color" "[0 0 1]" "LineWidth" 2; "b-" "Color" "[0 0 0]" "LineWidth" 1;};
 
+    filename_suffix = '_s11-logmag';
     xlim_min = cmdXlim(1); 
     xlim_max = cmdXlim(2);
 
@@ -21,10 +22,9 @@ function cmd_genfig_s11_logmag(output_dir, filenames, cmdXlim, format_style, sav
         sp0_freq_org = sp0_org.Frequencies;
         sp0_freq = sp0_freq_org(1):1e6:sp0_freq_org(end);   % New frequency plan for the interpolation with 1 MHz
         sp0 = rfinterp1(sp0_org, sp0_freq);                 % Interpolation process
-        sp0_s11_LOGMAG  = 20*log10(abs(rfparam(sp0,1,1)));
+        sp0_s11_LOGMAG = 20*log10(abs(rfparam(sp0,1,1)));
 
-        plot(sp0_freq/1e9,sp0_s11_LOGMAG,'DisplayName',cmdLegendTexts(n),'LineStyle',cmdLineStyleOrder(n),'LineWidth',cmdLineWidthOrder(n));
-
+        plot(sp0_freq/1e9,sp0_s11_LOGMAG,'LineStyle',cmdLineStyleOrder(n),'LineWidth',cmdLineWidthOrder(n));
     end
     s11_n10dB_line  = -10 + 0*abs(rfparam(sp0,1,1));
     plot(sp0_freq/1e9,s11_n10dB_line,'Color',[0 0 0],'LineStyle','-.');
@@ -67,16 +67,13 @@ function cmd_genfig_s11_logmag(output_dir, filenames, cmdXlim, format_style, sav
     %% saving a file -----
     for k=1:1:length(saveformat)
         if strcmp(saveformat(k),".fig")
-            savefig(gcf,output_dir_filename+"/"+savefilename+".fig");
+            savefig(gcf,output_dir_filename+"/"+savefilename+filename_suffix+".fig");
         elseif strcmp(saveformat(k),".csv")
-            csvbuff_matrix = ['angle[deg]' strcat(savefilename,'[dBi]'); angle_deg antenna_gain_dBi];
-            writematrix(csvbuff_matrix,output_dir_filename+"/"+savefilename+"_dut_gains.csv");
+            csvbuff_matrix = ['Frequency [Hz]' 'S11[dB]'; sp0_freq sp0_s11_LOGMAG];
+            writematrix(csvbuff_matrix,output_dir_filename+"/"+savefilename+filename_suffix+".csv");
         else
-            exportgraphics(gcf,output_dir_filename+"/"+savefilename+saveformat(k));
+            exportgraphics(gcf,output_dir_filename+"/"+savefilename+filename_suffix+saveformat(k));
         end
     end
-    clf;
-
-
 
 end
