@@ -24,7 +24,7 @@ def dut_meas_csv2sqlite(filepath_name="",filename_db="antmeas.db", db_table="dut
 
     #filename_db     = filename_meas_csv.split('.')[0] + '.db'
     conndb = sqlite3.connect(filename_db,detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)    # enabling the conversion fucntions.
-    sqlite3.dbapi2.converters['DATETIME'] = sqlite3.dbapi2.converters['TIMESTAMP']                  # definig the api 'DATETIME'. actual data type of SQLite3 is CHAR.
+    sqlite3.dbapi2.converters['DATETIME'] = sqlite3.dbapi2.converters['TIMESTAMP']                  # definig the api 'DATETIME'. actual data type of SQLite3 is CHAR. https://qiita.com/t2psyto/items/e139b5d888d001d0673d
 
     cur = conndb.cursor()
     cur.execute( 'CREATE TABLE IF NOT EXISTS '+db_table+'(\
@@ -48,10 +48,11 @@ def dut_meas_csv2sqlite(filepath_name="",filename_db="antmeas.db", db_table="dut
         col_MHz = float(col.split("GHz")[0])*1000
         freq_points.append(str(col_MHz))
         for idx in csv_index:
-            db_buff.append([filename_meas_csv,csv_date,col_MHz,abs(idx-360),float(df.loc[idx,col])])
+            db_buff.append([filename_meas_csv,csv_date,col_MHz,abs(idx-360),float(df.loc[idx,col])])        # recreate a record to be stored to sqlite.
         cur.executemany('INSERT INTO '+db_table+'(file_name, file_date_unixepoch, frequency_MHz, angle, meas_s21_dB) values(?,?,?,?,?)',db_buff)
 
     conndb.commit()
+
     with open(filename_meas_csv.split('.')[0]+'_freq.pts', mode='w') as f:
        for freq_point in freq_points:
         f.write(freq_point+'\n')
