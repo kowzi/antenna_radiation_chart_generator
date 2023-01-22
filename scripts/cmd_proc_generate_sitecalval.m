@@ -1,10 +1,7 @@
-clear;
-close all;
-clc;
+function cmd_proc_generate_sitecalval(filename_db)
+%CMD_PROC_GENERATE_SITECALVAL Summary of this function goes here
+%   Detailed explanation goes here
 
-set_sitecal_local("../output/antmeas.db");
-
-function set_sitecal_local(filename_db)
     conn = sqlite(filename_db);
     sqlquery = [
         "create table if not exists site_calval as select s.frequency_MHz, "+...
@@ -28,8 +25,11 @@ function set_sitecal_local(filename_db)
         "as t on s.frequency_MHz = t.frequency_MHz";
         ];
     
-    fetch(conn, sqlquery);
+    for n=1:1:length(sqlquery)
+        fetch(conn, sqlquery(n));
+    end
     close(conn);
-    
+
+
 end
 
