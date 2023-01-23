@@ -60,7 +60,7 @@ def dut_meas_csv2sqlite(filepath_name="",filename_db="antmeas.db", db_table="dut
     conndb.close()
 
 if __name__ == "__main__":
-    db_file = './output/antmeas_L10_Dipole_v6.5ASYN.db'
+    db_file = './output/KONDO_20230123.db'
     #if os.path.exists(db_file):
     #    os.remove(db_file)
     #    print('Removed old file:'+db_file)

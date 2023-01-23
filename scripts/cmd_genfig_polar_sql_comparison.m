@@ -70,16 +70,16 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                 %p.LineStyle="-";
                 p.Marker="none";
     
-                if contains(filenames(n),'VV_')
+                if contains(filenames(n),'VV')
                     %p.Color = "#0072BD";
                     buf_legend    = sprintf('%s: %.1f MHz - H-Plane, E_{\\theta}', alt_filenames(n), dut_antennas.frequency_MHz(2));
-                elseif contains(filenames(n),'HH_')
+                elseif contains(filenames(n),'HH')
                     %p.Color = "#D95319";
                     buf_legend    = sprintf('%s: %.1f MHz - E-Plane, E_{\\theta}', alt_filenames(n), dut_antennas.frequency_MHz(2));
-                elseif contains(filenames(n),'VH_')
+                elseif contains(filenames(n),'VH')
                     %p.Color = "#D95319";
                     buf_legend    = sprintf('%s: %.1f MHz - E-Plane, E_{\\phi}', alt_filenames(n), dut_antennas.frequency_MHz(2));
-                elseif contains(filenames(n),'HV_')
+                elseif contains(filenames(n),'HV')
                     %p.Color = "#D95319";
                     buf_legend    = sprintf('%s: %.1f MHz - H-Plane, E_{\\phi}', alt_filenames(n), dut_antennas.frequency_MHz(2));
                 else
