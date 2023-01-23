@@ -15,7 +15,6 @@ function cmd_proc_import_measured_csv(filename_db, csv_filepath_name, db_table)
     csv_posixtime           = posixtime(datetime(csv_filepath_name_info.date));
     [~, csv_filename, csv_ext] = fileparts(csv_filepath_name);
     csv_filename_ext = append(csv_filename,csv_ext);
-
     csv_cells = readcell(csv_filepath_name);
     % =========== DATA LOOP ===========================
     % angle : csv_cells(n,1), n>=3
