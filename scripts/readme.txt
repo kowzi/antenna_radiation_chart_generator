@@ -11,4 +11,10 @@ Execute a script in ./scripts directory
 (5) get_dutgain.py         --> calucurating the dBi value of the dut antennas defined in the file (imported with radpat_csv2sqlite.py)
   --> cmd_proc_generate_dutgain.m
 (6) genfig_polar_sql.mlx   --> generating the figure files as demand
+  --> merged into cmd_genfig_polar_sql_comparison.m
 (7) genfig_polar_sql_comparison.mlx  --> for a comparison
+  --> cmd_genfig_polar_sql_comparison.m
+(8) sp11_response.mlx
+  --> TB_genfig_s11_response.mlx & cmd_*
+(9) TB_genfig_polar_sql_comparison.mlx
+  --> Merged into App_RadiationPattern.mlx
