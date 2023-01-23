@@ -19,11 +19,11 @@ def sqlcmd_set_site_calvals(filename_db="sitecal.db"):
     conndb = sqlite3.connect(filename_db, detect_types=sqlite3.PARSE_DECLTYPES|sqlite3.PARSE_COLNAMES)    # enabling the conversion fucntions.
 
     cur = conndb.cursor()
-    cur.execute( 'create table if not exists site_calval as select s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data3mV as t on s.frequency_MHz = t.frequency_MHz')
-    cur.execute( 'create table if not exists site_calval_TAR3115_dataset_Data1mV as select s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data1mV as t on s.frequency_MHz = t.frequency_MHz')
-    cur.execute( 'create table if not exists site_calval_TAR3115_dataset_Data1mH as select s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data1mH as t on s.frequency_MHz = t.frequency_MHz')
-    cur.execute( 'create table if not exists site_calval_TAR3115_dataset_Data3mV as select s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data3mV as t on s.frequency_MHz = t.frequency_MHz')
-    cur.execute( 'create table if not exists site_calval_TAR3115_dataset_Data3mH as select s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data3mH as t on s.frequency_MHz = t.frequency_MHz')
+    cur.execute( 'create table if not exists site_calval as select distinct s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data3mV as t on s.frequency_MHz = t.frequency_MHz')
+    cur.execute( 'create table if not exists site_calval_TAR3115_dataset_Data1mV as select distinct s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data1mV as t on s.frequency_MHz = t.frequency_MHz')
+    cur.execute( 'create table if not exists site_calval_TAR3115_dataset_Data1mH as select distinct s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data1mH as t on s.frequency_MHz = t.frequency_MHz')
+    cur.execute( 'create table if not exists site_calval_TAR3115_dataset_Data3mV as select distinct s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data3mV as t on s.frequency_MHz = t.frequency_MHz')
+    cur.execute( 'create table if not exists site_calval_TAR3115_dataset_Data3mH as select distinct s.frequency_MHz, (s.s21_dB-t.gain_dBi) as calval_0dBi from Site_Measurement as s inner join TAR3115_dataset_Data3mH as t on s.frequency_MHz = t.frequency_MHz')
     conndb.commit()
 
 if __name__ == "__main__":

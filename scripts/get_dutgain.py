@@ -20,7 +20,7 @@ def sqlcmd_set_dut_gains(filename_db="sitecal.db", tbname_dut_gains_dBi="dut_gai
 
     cur = conndb.cursor()
     #sql_command = 'create table dut_gains as select d.file_name, d.file_date_unixepoch, d.frequency_MHz, d.angle, (d.meas_s21_dB-s.calval_0dBi) as antenna_gain_dBi from dut_meas as d inner join site_calval as s on ROUND(d.frequency_MHz,1) = s.frequency_MHz where d.angle NOT IN (360.0)'%() 
-    sql_command = 'create table {} as select d.file_name, d.file_date_unixepoch, d.frequency_MHz, d.angle, (d.meas_s21_dB-s.calval_0dBi) as antenna_gain_dBi from dut_meas as d inner join {} as s on ROUND(d.frequency_MHz,1) = s.frequency_MHz where d.angle NOT IN (360.0)'.format(tbname_dut_gains_dBi,site_calval)
+    sql_command = 'create table {} as select distinct d.file_name, d.file_date_unixepoch, d.frequency_MHz, d.angle, (d.meas_s21_dB-s.calval_0dBi) as antenna_gain_dBi from dut_meas as d inner join {} as s on ROUND(d.frequency_MHz,1) = s.frequency_MHz where d.angle NOT IN (360.0)'.format(tbname_dut_gains_dBi,site_calval)
     cur.execute(sql_command)
     conndb.commit()
 

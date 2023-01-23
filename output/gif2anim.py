@@ -1,8 +1,8 @@
 from PIL import Image
 import glob
 import os
-directories = sorted(glob.glob('./*/'))
-file_suffix = '_3500-3900MHz'
+directories = sorted(glob.glob('./L*/'))
+file_suffix = '_3000-4100MHz'
 
 print(directories)
 
