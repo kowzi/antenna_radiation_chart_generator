@@ -7,7 +7,7 @@ Execute a script in ./scripts directory
 (3) set_sitecal.py         --> generating the calibration value. this is a final process.
   --> cmd_proc_generate_sitecalval.m
 (4) radpat_csv2sqlite.py   --> importing the radiation file in .csv format in the ./input to a sqlite file
-
+  --> cmd_proc_import_measured_csv.m
 (5) get_dutgain.py         --> calucurating the dBi value of the dut antennas defined in the file (imported with radpat_csv2sqlite.py)
   --> cmd_proc_generate_dutgain.m
 (6) genfig_polar_sql.mlx   --> generating the figure files as demand
