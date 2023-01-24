@@ -1,4 +1,4 @@
-function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, freq_plan, saveformat, alt_filenames, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
+function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, freq_plan, saveformat, alt_filenames, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder, enGainTotal)
 %UNTITLED Summary of this function goes here
 %   input_sqlite    ... sqlite file to be read
 %   output_dir      ... output directory
@@ -52,6 +52,11 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                 % Data flipping. use flip().
 
 
+                % --- structure/variables to be used for
+                %   antenna_gain_dBi(n)        -- % value for all purpose
+                %   antenna_gain_dBi_view(n)   -- % limited value by xlim only for the polarc chart
+                %   angle_rad(n)               -- % value in radian for the polar chart
+                %   angle_deg(n)               -- % value in degree for .csv file
                 % --- Configuring the plot property
                 if contains(filenames(n),'CFG-R')
                     antenna_gain_dBi = flip(dut_antennas.antenna_gain_dBi);
@@ -59,12 +64,11 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                     antenna_gain_dBi = dut_antennas.antenna_gain_dBi;
                 end
 
-                % --- Limitting the minimum value to show in the polarchart
-                antenna_gain_dBi_view = antenna_gain_dBi;
-                antenna_gain_dBi_view(antenna_gain_dBi_view<rlim_min)=rlim_min;
+                antenna_gain_dBi_view = antenna_gain_dBi;                           
+                antenna_gain_dBi_view(antenna_gain_dBi_view<rlim_min)=rlim_min;     
                 
                 angle_rad = dut_antennas.angle*(2*pi/360);
-                angle_deg = dut_antennas.angle;
+                angle_deg = dut_antennas.angle;  
     
                 p=polarplot(ax, angle_rad([1:end 1]),antenna_gain_dBi_view([1:end 1]),LineStyleOrder(n),'LineWidth',LineWidthOrder(n));
                 %p.LineStyle="-";
@@ -88,6 +92,14 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                 end
                 legend_titles = [legend_titles, buf_legend];
                 legend(ax, legend_titles, 'Location', 'southoutside','FontSize',8);
+
+%                 % calculate and draw the total gain chart.
+%                 if(enGainTotal==true)
+%                     antenna_gain_total     = antenna_gain_total + 10.^((antenna_gain_dBi)/20);
+%                     antenna_gain_dBi_total = 20*log10(antenna_gain_total); 
+%                     antenna_gain_dBi_total(antenna_gain_dBi_total<rlim_min)=rlim_min;
+%                     polarplot(ax, angle_rad([1:end 1]),antenna_gain_dBi_total([1:end 1]),'LineWidth',2);
+%                 end
 
             end
 
