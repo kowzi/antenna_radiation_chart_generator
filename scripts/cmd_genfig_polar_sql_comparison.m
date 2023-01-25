@@ -130,6 +130,6 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
         
     end
     
-
+    delete(gcp('nocreate'))
 
 end
