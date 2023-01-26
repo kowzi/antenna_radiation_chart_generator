@@ -1,4 +1,4 @@
-function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, freq_plan, saveformat, alt_filenames, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder, enGainTotal)
+function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, freq_plan, saveformat, alt_filenames, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder, enGainTotal, enPeakMarker)
 %UNTITLED Summary of this function goes here
 %   input_sqlite    ... sqlite file to be read
 %   output_dir      ... output directory
@@ -22,8 +22,14 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
         % graph property
         clf;
         ax = polaraxes;
-        ax.ColorOrder = cmdColorOrder;          % https://jp.mathworks.com/help/matlab/creating_plots/defining-the-color-of-lines-for-plotting.html
-        LineStyleOrder = cmdLineStyleOrder;
+        if(enPeakMarker==false)
+            ax.ColorOrder = cmdColorOrder;          % https://jp.mathworks.com/help/matlab/creating_plots/defining-the-color-of-lines-for-plotting.html
+            LineStyleOrder = cmdLineStyleOrder;
+        else
+            ax.ColorOrder = [cmdColorOrder; 0 0.4470 0.7410];          % https://jp.mathworks.com/help/matlab/creating_plots/defining-the-color-of-lines-for-plotting.html
+            LineStyleOrder = [cmdLineStyleOrder '-'];
+        end
+
         LineWidthOrder = cmdLineWidthOrder;
         legend_titles = {};
 
@@ -35,7 +41,7 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
         ax.FontName='Times New Roman';
         ax.FontWeight='bold';
         rlim([rlim_min rlim_max]);
-        legend(ax, legend_titles, 'Location', 'southoutside','FontSize',8);
+        legend(ax, legend_titles, 'Location', 'southoutside', 'FontSize', 8);
 
         hold on;
 
@@ -64,16 +70,6 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                     antenna_gain_dBi = dut_antennas.antenna_gain_dBi;
                 end
 
-                antenna_gain_dBi_view = antenna_gain_dBi;                           
-                antenna_gain_dBi_view(antenna_gain_dBi_view<rlim_min)=rlim_min;     
-                
-                angle_rad = dut_antennas.angle*(2*pi/360);
-                angle_deg = dut_antennas.angle;  
-    
-                p=polarplot(ax, angle_rad([1:end 1]),antenna_gain_dBi_view([1:end 1]),LineStyleOrder(n),'LineWidth',LineWidthOrder(n));
-                %p.LineStyle="-";
-                p.Marker="none";
-    
                 if contains(filenames(n),'VV')
                     %p.Color = "#0072BD";
                     buf_legend    = sprintf('%s: %.1f MHz - H-Plane, E_{\\theta}', alt_filenames(n), dut_antennas.frequency_MHz(2));
@@ -90,10 +86,25 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                     %p.Color = "#7E2F8E";
                     buf_legend    = sprintf('%s: %.1f MHz ', alt_filenames(n), dut_antennas.frequency_MHz(2));
                 end
+
+                antenna_gain_dBi_view = antenna_gain_dBi;                           
+                antenna_gain_dBi_view(antenna_gain_dBi_view<rlim_min)=rlim_min;     
+                
+                angle_rad = dut_antennas.angle*(2*pi/360);
+                angle_deg = dut_antennas.angle;  
+    
+                polarplot(ax, angle_rad([1:end 1]),antenna_gain_dBi_view([1:end 1]), 'Marker', 'none', 'LineStyle', LineStyleOrder(n), 'LineWidth', LineWidthOrder(n));
+
                 legend_titles = [legend_titles, buf_legend];
                 legend(ax, legend_titles, 'Location', 'southoutside','FontSize',8);
 
-%                 % calculate and draw the total gain chart.
+                if(enPeakMarker==true && n==1)
+                    [PeakMarker_gain_dBi, index_pkmarker] = max(antenna_gain_dBi_view); 
+                    PeakMarker_angle_rad = angle_rad(index_pkmarker);
+                    PeakMarker_angle_deg = angle_deg(index_pkmarker);
+                end
+
+%                 % calculate a total-gain chart.
 %                 if(enGainTotal==true)
 %                     antenna_gain_total     = antenna_gain_total + 10.^((antenna_gain_dBi)/20);
 %                     antenna_gain_dBi_total = 20*log10(antenna_gain_total); 
@@ -104,8 +115,12 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
             end
 
         end
-    
 
+        % === placing a peak marker.
+        if(enPeakMarker==true)
+            buf_legend = sprintf("Peak gain %.1f dBi @ %d deg", PeakMarker_gain_dBi, PeakMarker_angle_deg);
+            polarplot(ax, PeakMarker_angle_rad, PeakMarker_gain_dBi, 'Marker', 'o', 'DisplayName', buf_legend);
+        end
 
         savefilename = sprintf("%s_%0.1fMHz",replace(filenames(1),".csv",""),freq_plan(m));
         file_output = output_dir+"/"+replace(filenames(1),".csv","");

@@ -1,7 +1,7 @@
-function cmd_genfig_s11_smith(output_dir, filenames, cmdXlim_mode, cmdXlim_GHz, format_style, saveformat, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
+function cmd_genfig_s11_smith(inout_dir, filenames, cmdXlim_mode, cmdXlim_GHz, format_style, saveformat, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
 %UNTITLED Summary of this function goes here
 %   input_sqlite    ... sqlite file to be read
-%   output_dir      ... output directory
+%   inout_dir      ... output directory
 %   filename        ... filename table of sqlite to be read
 %   freq_plan       ... frequency plan. ex. =[1993 2643 2993 3000]; =3000:1:3500;
 %   saveformat      ... output file format. ex. = [".png"; ".emf"; ".fig"; ".csv";];
@@ -15,7 +15,7 @@ function cmd_genfig_s11_smith(output_dir, filenames, cmdXlim_mode, cmdXlim_GHz, 
     f=figure;
     hold on;
 
-    sp0_org         = sparameters(filenames(1));
+    sp0_org         = sparameters(append(inout_dir,"/",filenames(1)));
     sp0_freq_org    = sp0_org.Frequencies;
     sp0_freq        = sp0_freq_org(1):1e6:sp0_freq_org(end);        % New frequency plan for the interpolation with 1 MHz
     sp0             = rfinterp1(sp0_org, sp0_freq);                 % Interpolation process
@@ -46,7 +46,8 @@ function cmd_genfig_s11_smith(output_dir, filenames, cmdXlim_mode, cmdXlim_GHz, 
     pbaspect([1 1 1]);    
 
     savefilename = replace(filenames(1),".","");
-    output_dir_filename = output_dir+"/"+savefilename;
+    output_dir_filename = inout_dir+"/"+savefilename;
+
     if not(exist(output_dir_filename,"dir"))
         mkdir(output_dir_filename);
     end
@@ -54,12 +55,12 @@ function cmd_genfig_s11_smith(output_dir, filenames, cmdXlim_mode, cmdXlim_GHz, 
     %% saving a file -----
     for k=1:1:length(saveformat)
         if strcmp(saveformat(k),".fig")
-            savefig(gcf,output_dir_filename+"/"+savefilename+filename_suffix+".fig");
+            savefig(gcf,output_dir_filename+"/"+savefilename+filename_suffix+"_"+cmdXlim_mode+".fig");
         elseif strcmp(saveformat(k),".csv")
             csvbuff_matrix = ['Frequency [Hz]' 'S11[real/imag]'; sp0_freq string(transpose(sp0_rfparam))];
-            writematrix(csvbuff_matrix,output_dir_filename+"/"+savefilename+filename_suffix+".csv");
+            writematrix(csvbuff_matrix,output_dir_filename+"/"+savefilename+filename_suffix+"_"+cmdXlim_mode+".csv");
         else
-            exportgraphics(gcf,output_dir_filename+"/"+savefilename+filename_suffix+saveformat(k));
+            exportgraphics(gcf,output_dir_filename+"/"+savefilename+filename_suffix+"_"+cmdXlim_mode+saveformat(k));
         end
     end
 

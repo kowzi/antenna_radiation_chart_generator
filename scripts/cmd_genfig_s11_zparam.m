@@ -1,7 +1,7 @@
-function cmd_genfig_s11_zparam(output_dir, filenames, cmdXlim, format_style, saveformat, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
+function cmd_genfig_s11_zparam(inout_dir, filenames, cmdXlim, format_style, saveformat, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
 %UNTITLED Summary of this function goes here
 %   input_sqlite    ... sqlite file to be read
-%   output_dir      ... output directory
+%   inout_dir      ... output directory
 %   filename        ... filename table of sqlite to be read
 %   freq_plan       ... frequency plan. ex. =[1993 2643 2993 3000]; =3000:1:3500;
 %   saveformat      ... output file format. ex. = [".png"; ".emf"; ".fig"; ".csv";];
@@ -19,8 +19,8 @@ function cmd_genfig_s11_zparam(output_dir, filenames, cmdXlim, format_style, sav
     hold on;
 
     for n=1:1:length(filenames)
-        sp0_org = sparameters(filenames(n));
-        zp0_org = zparameters(filenames(n));       % https://jp.mathworks.com/help/rf/ref/zparameters.html
+        sp0_org = sparameters(append(inout_dir,"/",filenames(n)));
+        zp0_org = zparameters(append(inout_dir,"/",filenames(n)));       % https://jp.mathworks.com/help/rf/ref/zparameters.html
         sp0_freq_org = sp0_org.Frequencies;
         sp0_freq = sp0_freq_org(1):1e6:sp0_freq_org(end);   % New frequency plan for the interpolation with 1 MHz
         zp0 = rfinterp1(zp0_org, sp0_freq);
@@ -67,7 +67,7 @@ function cmd_genfig_s11_zparam(output_dir, filenames, cmdXlim, format_style, sav
     pbaspect([1 1 1]);
 
     savefilename = replace(filenames(1),".","");
-    output_dir_filename = output_dir+"/"+savefilename;
+    output_dir_filename = inout_dir+"/"+savefilename;
     if not(exist(output_dir_filename,"dir"))
         mkdir(output_dir_filename);
     end
