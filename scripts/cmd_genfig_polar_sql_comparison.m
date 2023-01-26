@@ -22,16 +22,13 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
         % graph property
         clf;
         ax = polaraxes;
-        if(enPeakMarker==false)
-            ax.ColorOrder = cmdColorOrder;          % https://jp.mathworks.com/help/matlab/creating_plots/defining-the-color-of-lines-for-plotting.html
-            LineStyleOrder = cmdLineStyleOrder;
-        else
-            ax.ColorOrder = [cmdColorOrder; 0 0.4470 0.7410];          % https://jp.mathworks.com/help/matlab/creating_plots/defining-the-color-of-lines-for-plotting.html
-            LineStyleOrder = [cmdLineStyleOrder '-'];
-        end
 
+        ax.ColorOrder = cmdColorOrder;          % https://jp.mathworks.com/help/matlab/creating_plots/defining-the-color-of-lines-for-plotting.html
+        LineStyleOrder = cmdLineStyleOrder;
         LineWidthOrder = cmdLineWidthOrder;
         legend_titles = {};
+        
+        antenna_gain_total = [];
 
         %% https://jp.mathworks.com/help/matlab/ref/matlab.graphics.axis.polaraxes-properties.html
         title('Antenna Gain [dBi]');
@@ -104,22 +101,30 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                     PeakMarker_angle_deg = angle_deg(index_pkmarker);
                 end
 
-%                 % calculate a total-gain chart.
-%                 if(enGainTotal==true)
-%                     antenna_gain_total     = antenna_gain_total + 10.^((antenna_gain_dBi)/20);
-%                     antenna_gain_dBi_total = 20*log10(antenna_gain_total); 
-%                     antenna_gain_dBi_total(antenna_gain_dBi_total<rlim_min)=rlim_min;
-%                     polarplot(ax, angle_rad([1:end 1]),antenna_gain_dBi_total([1:end 1]),'LineWidth',2);
-%                 end
+                % calculate a total-gain chart.
+                if(enGainTotal==true)
+                    if(n==1)
+                        antenna_gain_total     = 10.^((antenna_gain_dBi)/20);
+                    else
+                        antenna_gain_total     = antenna_gain_total + 10.^((antenna_gain_dBi)/20);
+                    end
+                    antenna_gain_dBi_total = 20*log10(antenna_gain_total); 
+                    antenna_gain_dBi_total(antenna_gain_dBi_total<rlim_min)=rlim_min;
+                end
 
             end
 
         end
 
+        if(enGainTotal==true)
+            polarplot(ax, angle_rad([1:end 1]),antenna_gain_dBi_total([1:end 1]),'Color', [0 0 0], 'LineStyle','--', 'LineWidth',0.5, 'DisplayName', 'Total gain');
+        end
+
         % === placing a peak marker.
         if(enPeakMarker==true)
-            buf_legend = sprintf("Peak gain %.1f dBi @ %d deg", PeakMarker_gain_dBi, PeakMarker_angle_deg);
-            polarplot(ax, PeakMarker_angle_rad, PeakMarker_gain_dBi, 'Marker', 'o', 'DisplayName', buf_legend);
+            buf_legend = sprintf("Peak gain %.1f dBi @ %d \\circ", PeakMarker_gain_dBi, PeakMarker_angle_deg);
+            %polarplot(ax, PeakMarker_angle_rad, PeakMarker_gain_dBi, 'Marker', 'o', 'DisplayName', buf_legend);
+            polarplot(ax, PeakMarker_angle_rad, PeakMarker_gain_dBi, 'Color', [0 0.4470 0.7410], 'LineStyle', '-', 'Marker', 'o', 'DisplayName', buf_legend);
         end
 
         savefilename = sprintf("%s_%0.1fMHz",replace(filenames(1),".csv",""),freq_plan(m));
