@@ -1,4 +1,4 @@
-function cmd_genfig_s11_smith(inout_dir, filenames, cmdXlim_mode, cmdXlim_GHz, format_style, saveformat, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
+function cmd_genfig_s11_smith(inout_dir, filenames, alternate_filename, cmdXlim_mode, cmdXlim_GHz, format_style, saveformat, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
 %UNTITLED Summary of this function goes here
 %   input_sqlite    ... sqlite file to be read
 %   inout_dir      ... output directory
@@ -29,7 +29,7 @@ function cmd_genfig_s11_smith(inout_dir, filenames, cmdXlim_mode, cmdXlim_GHz, f
     add(s,sp0_freq(1),sp0_rfparam(1));
     add(s,sp0_freq(end),sp0_rfparam(end));
 
-    s.LegendLabels  = {filenames(1), append('start:',string(sp0_freq(1)/1e9)," GHz"), append('stop:',string(sp0_freq(end)/1e9)," GHz")}; 
+    s.LegendLabels  = {alternate_filename(1), append('start:',string(sp0_freq(1)/1e9)," GHz"), append('stop:',string(sp0_freq(end)/1e9)," GHz")}; 
     s.LineWidth     = 1.8*cmdLineWidthOrder;
     s.LineStyle     = cmdLineStyleOrder;
     s.Marker        = {'none', 'o', 'square'};

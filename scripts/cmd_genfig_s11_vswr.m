@@ -27,14 +27,22 @@ function cmd_genfig_s11_vswr(inout_dir, filenames, cmdXlim, format_style, savefo
         
         plot(sp0_freq/1e9,sp0_s11_vswr,'LineStyle',cmdLineStyleOrder(n),'LineWidth',cmdLineWidthOrder(n));
 
+        if(n==1)
+            limit_line_freq  = sp0_freq;
+            limit_line_points= length(rfparam(sp0,1,1));
+        end
+    
     end
 
     if(cmdShowLimitLine=="vswr2")
-        vswr2_line      = 2 + 0*abs(rfparam(sp0,1,1));                             % VSWR 2 line
-        plot(sp0_freq/1e9,vswr2_line,'DisplayName','S11 -10dB','Color',[0 0 0],'LineStyle','-.');
+        s11_limit_line  = repelem(2, limit_line_points);
+        plot(limit_line_freq/1e9,s11_limit_line,'Color',[0 0 0],'LineStyle','-.');
     elseif(cmdShowLimitLine=="vswr3")
-        vswr3_line      = 3 + 0*abs(rfparam(sp0,1,1));                             % VSWR 3 line
-        plot(sp0_freq/1e9,vswr3_line,'DisplayName','S11 -10dB','Color',[0 0 0],'LineStyle','-.');
+        s11_limit_line  = repelem(3, limit_line_points);
+        plot(limit_line_freq/1e9,s11_limit_line,'Color',[0 0 0],'LineStyle','-.');
+    elseif(cmdShowLimitLine=="logmag10")
+        s11_limit_line  = repelem(-10, limit_line_points);
+        plot(limit_line_freq/1e9,s11_limit_line,'Color',[0 0 0],'LineStyle','-.');
     end
 
     %title(buff_title);

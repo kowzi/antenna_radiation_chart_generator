@@ -1,4 +1,4 @@
-function cmd_genfig_s11_logmag(inout_dir, filenames, cmdXlim, format_style, saveformat, cmdLegendTexts, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
+function cmd_genfig_s11_logmag(inout_dir, filenames, cmdXlim, format_style, saveformat, cmdLegendTexts, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder, cmdShowLimitLine)
 %UNTITLED Summary of this function goes here
 %   input_sqlite    ... sqlite file to be read
 %   inout_dir      ... output directory
@@ -25,9 +25,26 @@ function cmd_genfig_s11_logmag(inout_dir, filenames, cmdXlim, format_style, save
         sp0_s11_LOGMAG = 20*log10(abs(rfparam(sp0,1,1)));
 
         plot(sp0_freq/1e9,sp0_s11_LOGMAG,'LineStyle',cmdLineStyleOrder(n),'LineWidth',cmdLineWidthOrder(n));
+
+        if(n==1)
+            limit_line_freq  = sp0_freq;
+            limit_line_points= length(rfparam(sp0,1,1));
+        end
+    
     end
-    s11_n10dB_line  = -10 + 0*abs(rfparam(sp0,1,1));
-    plot(sp0_freq/1e9,s11_n10dB_line,'Color',[0 0 0],'LineStyle','-.');
+
+    if(cmdShowLimitLine=="vswr2")
+        s11_limit_line  = repelem(-9.542, limit_line_points);
+        plot(limit_line_freq/1e9,s11_limit_line,'Color',[0 0 0],'LineStyle','-.');
+    elseif(cmdShowLimitLine=="vswr3")
+        s11_limit_line  = repelem(-6.021, limit_line_points);
+        plot(limit_line_freq/1e9,s11_limit_line,'Color',[0 0 0],'LineStyle','-.');
+    elseif(cmdShowLimitLine=="logmag10")
+        s11_limit_line  = repelem(-10, limit_line_points);
+        plot(limit_line_freq/1e9,s11_limit_line,'Color',[0 0 0],'LineStyle','-.');
+    end
+
+
 
     %title(buff_title);
     xlabel('Frequency (GHz)','FontWeight','bold','FontName','Times New Roman')

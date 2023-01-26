@@ -1,4 +1,4 @@
-function cmd_genfig_s11_zparam(inout_dir, filenames, cmdXlim, format_style, saveformat, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
+function cmd_genfig_s11_zparam(inout_dir, filenames, alternate_filenames, cmdXlim, format_style, saveformat, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder)
 %UNTITLED Summary of this function goes here
 %   input_sqlite    ... sqlite file to be read
 %   inout_dir      ... output directory
@@ -30,9 +30,9 @@ function cmd_genfig_s11_zparam(inout_dir, filenames, cmdXlim, format_style, save
         sp0_z11_real    = real(rfparam(zp0,1,1));
         sp0_z11_imag    = imag(rfparam(zp0,1,1));
 
-        plot(sp0_freq/1e9, sp0_z11_real, 'DisplayName', 'Real(Z_{50})','LineStyle',cmdLineStyleOrder(n),'LineWidth',cmdLineWidthOrder(n));
-        plot(sp0_freq/1e9, sp0_z11_imag, 'DisplayName', 'Imag(Z_{50})','LineStyle',cmdLineStyleOrder(n),'LineWidth',cmdLineWidthOrder(n));
-        plot(sp0_freq/1e9, sp0_z11_abs, 'DisplayName', '|Z_{50}|','LineStyle',cmdLineStyleOrder(n),'LineWidth',cmdLineWidthOrder(n));
+        plot(sp0_freq/1e9, sp0_z11_real, 'DisplayName', append(alternate_filenames(n),': Real(Z_{50})'), 'LineStyle',cmdLineStyleOrder(n),'LineWidth',cmdLineWidthOrder(n));
+        plot(sp0_freq/1e9, sp0_z11_imag, 'DisplayName', append(alternate_filenames(n),': Imag(Z_{50})'), 'LineStyle',cmdLineStyleOrder(n),'LineWidth',cmdLineWidthOrder(n));
+        plot(sp0_freq/1e9, sp0_z11_abs,  'DisplayName', append(alternate_filenames(n),': |Z_{50}|')    ,'LineStyle',cmdLineStyleOrder(n),'LineWidth',cmdLineWidthOrder(n));
 
     end
 
