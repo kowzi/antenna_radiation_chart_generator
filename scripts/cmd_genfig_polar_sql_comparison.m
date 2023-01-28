@@ -60,8 +60,8 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                 % Data flipping. use flip().
 
                 log_buff = [log_buff, sprintf(" == ( %d ) : %s =================== ", n, string(datetime) ) ]; 
-                log_buff = [log_buff, sprintf("CSV filename: %s", filenames(n))]; 
-                log_buff = [log_buff, sprintf("Alternate filename: %s", alt_filenames(n))]; 
+                log_buff = [log_buff, sprintf("CSV filename:\t\t\t %s", filenames(n))]; 
+                log_buff = [log_buff, sprintf("Alternate filename:\t\t %s", alt_filenames(n))]; 
                 % --- structure/variables to be used for
                 %   antenna_gain_dBi(n)        -- % value for all purpose
                 %   antenna_gain_dBi_view(n)   -- % limited value by xlim only for the polarc chart
@@ -70,10 +70,10 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                 % --- Configuring the plot property
                 if contains(filenames(n),'CFG-R')
                     antenna_gain_dBi = flip(dut_antennas.antenna_gain_dBi);
-                    log_buff = [log_buff, "Config option in name [R]: Detected. Data rotation flipped."]; 
+                    log_buff = [log_buff, sprintf("Config option in name [R]:\t Detected. Data rotation flipped.")]; 
                 else
                     antenna_gain_dBi = dut_antennas.antenna_gain_dBi;
-                    log_buff = [log_buff, "Config option in name [R]: Not detected."]; 
+                    log_buff = [log_buff, sprintf("Config option in name [R]:\t Not detected.")]; 
                 end
 
                 if( cmdCircShift(n) ~= 0 )
@@ -81,26 +81,27 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                 end
                 log_buff = [log_buff, sprintf("Argument option [CircleShift]: %d degree shifted.", cmdCircShift(n)) ]; 
 
+
                 if contains(filenames(n),'VV')
                     %p.Color = "#0072BD";
                     buf_legend    = sprintf('%s: %.1f MHz - H-Plane, E_{\\theta}', alt_filenames(n), dut_antennas.frequency_MHz(2));
-                    log_buff = [log_buff, sprintf("Config option in name [VV]: %s", buf_legend)]; 
+                    log_buff = [log_buff, sprintf("Config option in name [VV]:\t %s", buf_legend)]; 
                 elseif contains(filenames(n),'HH')
                     %p.Color = "#D95319";
                     buf_legend    = sprintf('%s: %.1f MHz - E-Plane, E_{\\theta}', alt_filenames(n), dut_antennas.frequency_MHz(2));
-                    log_buff = [log_buff, sprintf("Config option in name [HH]: %s", buf_legend)]; 
+                    log_buff = [log_buff, sprintf("Config option in name [HH]:\t %s", buf_legend)]; 
                 elseif contains(filenames(n),'VH')
                     %p.Color = "#D95319";
                     buf_legend    = sprintf('%s: %.1f MHz - E-Plane, E_{\\phi}', alt_filenames(n), dut_antennas.frequency_MHz(2));
-                    log_buff = [log_buff, sprintf("Config option in name [VH]: %s", buf_legend)]; 
+                    log_buff = [log_buff, sprintf("Config option in name [VH]:\t %s", buf_legend)]; 
                 elseif contains(filenames(n),'HV')
                     %p.Color = "#D95319";
                     buf_legend    = sprintf('%s: %.1f MHz - H-Plane, E_{\\phi}', alt_filenames(n), dut_antennas.frequency_MHz(2));
-                    log_buff = [log_buff, sprintf("Config option in name [HV]: %s", buf_legend)]; 
+                    log_buff = [log_buff, sprintf("Config option in name [HV]:\t %s", buf_legend)]; 
                 else
                     %p.Color = "#7E2F8E";
                     buf_legend    = sprintf('%s: %.1f MHz ', alt_filenames(n), dut_antennas.frequency_MHz(2));
-                    log_buff = [log_buff, sprintf("Config option in name [none]: %s", buf_legend)]; 
+                    log_buff = [log_buff, sprintf("Config option in name [none]:\t %s", buf_legend)]; 
                 end
 
                 antenna_gain_dBi_view = antenna_gain_dBi;                           
@@ -118,7 +119,7 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                     [PeakMarker_gain_dBi, index_pkmarker] = max(antenna_gain_dBi_view); 
                     PeakMarker_angle_rad = angle_rad(index_pkmarker);
                     PeakMarker_angle_deg = angle_deg(index_pkmarker);
-                    log_buff = [log_buff, sprintf("Peak Marker at: %.1f [dBi] %.1f[deg]", PeakMarker_gain_dBi, PeakMarker_angle_deg)]; 
+                    log_buff = [log_buff, sprintf("Peak Marker :\t\t\t %.1f [dBi] at %.1f[deg]", PeakMarker_gain_dBi, PeakMarker_angle_deg)]; 
                 end
 
                 % calculate a total-gain chart.
