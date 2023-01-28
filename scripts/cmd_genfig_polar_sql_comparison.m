@@ -1,4 +1,4 @@
-function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, freq_plan, saveformat, alt_filenames, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder, enGainTotal, enPeakMarker)
+function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, freq_plan, saveformat, alt_filenames, cmdColorOrder, cmdLineStyleOrder, cmdLineWidthOrder, enGainTotal, enPeakMarker, cmdCircShift)
 %UNTITLED Summary of this function goes here
 %   input_sqlite    ... sqlite file to be read
 %   output_dir      ... output directory
@@ -6,13 +6,16 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
 %   freq_plan       ... frequency plan. ex. =[1993 2643 2993 3000]; =3000:1:3500;
 %   saveformat      ... output file format. ex. = [".png"; ".emf"; ".fig"; ".csv";];
 %   alt_filenames   ... alternate filename used for the legend. ex. = ["Proposed 1"; "Proposed 2";];
+%   cmdCircShift    ... by using cifcshift() to rotate the data with certain degree.
     
     rlim_min = -30;
     rlim_max = 10;
     
     % https://jp.mathworks.com/help/matlab/matlab_prog/pass-contents-of-cell-arrays-to-functions.html
     %line_styles = {"b-" "Color" "[0 0 1]" "LineWidth" 2; "b-" "Color" "[0 0 0]" "LineWidth" 1;};
-        
+
+
+    datetime.setDefaultFormats('default','yyyy/mm/dd HH:MM:SS');
 
 %    for m=1:1:length(freq_plan)
     parfor m=1:length(freq_plan)
@@ -29,6 +32,8 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
         legend_titles = {};
         
         antenna_gain_total = [];
+
+        log_buff = [];
 
         %% https://jp.mathworks.com/help/matlab/ref/matlab.graphics.axis.polaraxes-properties.html
         title('Antenna Gain [dBi]');
@@ -54,7 +59,9 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                 % Technique to close the loop of the polar chart. [1:end 1] means make an array from 1 to end and add data(1) at last
                 % Data flipping. use flip().
 
-
+                log_buff = [log_buff, sprintf(" == ( %d ) : %s =================== ", n, string(datetime) ) ]; 
+                log_buff = [log_buff, sprintf("CSV filename: %s", filenames(n))]; 
+                log_buff = [log_buff, sprintf("Alternate filename: %s", alt_filenames(n))]; 
                 % --- structure/variables to be used for
                 %   antenna_gain_dBi(n)        -- % value for all purpose
                 %   antenna_gain_dBi_view(n)   -- % limited value by xlim only for the polarc chart
@@ -63,25 +70,37 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                 % --- Configuring the plot property
                 if contains(filenames(n),'CFG-R')
                     antenna_gain_dBi = flip(dut_antennas.antenna_gain_dBi);
+                    log_buff = [log_buff, "Config option in name [R]: Detected. Data rotation flipped."]; 
                 else
                     antenna_gain_dBi = dut_antennas.antenna_gain_dBi;
+                    log_buff = [log_buff, "Config option in name [R]: Not detected."]; 
                 end
+
+                if( cmdCircShift(n) ~= 0 )
+                    antenna_gain_dBi = circshift(antenna_gain_dBi, round((length(antenna_gain_dBi)+1)*cmdCircShift(n)/360));
+                end
+                log_buff = [log_buff, sprintf("Argument option [CircleShift]: %d degree shifted.", cmdCircShift(n)) ]; 
 
                 if contains(filenames(n),'VV')
                     %p.Color = "#0072BD";
                     buf_legend    = sprintf('%s: %.1f MHz - H-Plane, E_{\\theta}', alt_filenames(n), dut_antennas.frequency_MHz(2));
+                    log_buff = [log_buff, sprintf("Config option in name [VV]: %s", buf_legend)]; 
                 elseif contains(filenames(n),'HH')
                     %p.Color = "#D95319";
                     buf_legend    = sprintf('%s: %.1f MHz - E-Plane, E_{\\theta}', alt_filenames(n), dut_antennas.frequency_MHz(2));
+                    log_buff = [log_buff, sprintf("Config option in name [HH]: %s", buf_legend)]; 
                 elseif contains(filenames(n),'VH')
                     %p.Color = "#D95319";
                     buf_legend    = sprintf('%s: %.1f MHz - E-Plane, E_{\\phi}', alt_filenames(n), dut_antennas.frequency_MHz(2));
+                    log_buff = [log_buff, sprintf("Config option in name [VH]: %s", buf_legend)]; 
                 elseif contains(filenames(n),'HV')
                     %p.Color = "#D95319";
                     buf_legend    = sprintf('%s: %.1f MHz - H-Plane, E_{\\phi}', alt_filenames(n), dut_antennas.frequency_MHz(2));
+                    log_buff = [log_buff, sprintf("Config option in name [HV]: %s", buf_legend)]; 
                 else
                     %p.Color = "#7E2F8E";
                     buf_legend    = sprintf('%s: %.1f MHz ', alt_filenames(n), dut_antennas.frequency_MHz(2));
+                    log_buff = [log_buff, sprintf("Config option in name [none]: %s", buf_legend)]; 
                 end
 
                 antenna_gain_dBi_view = antenna_gain_dBi;                           
@@ -99,6 +118,7 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                     [PeakMarker_gain_dBi, index_pkmarker] = max(antenna_gain_dBi_view); 
                     PeakMarker_angle_rad = angle_rad(index_pkmarker);
                     PeakMarker_angle_deg = angle_deg(index_pkmarker);
+                    log_buff = [log_buff, sprintf("Peak Marker at: %.1f [dBi] %.1f[deg]", PeakMarker_gain_dBi, PeakMarker_angle_deg)]; 
                 end
 
                 % calculate a total-gain chart.
@@ -132,7 +152,9 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
         if not(exist(file_output,"dir"))
             mkdir(file_output);
         end
-    
+
+        writelines(log_buff, file_output+"/"+savefilename+"_log.txt");
+
         %% .png file write -----
         for k=1:1:length(saveformat)
             if strcmp(saveformat(k),".fig")
