@@ -119,7 +119,6 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
                     [PeakMarker_gain_dBi, index_pkmarker] = max(antenna_gain_dBi_view); 
                     PeakMarker_angle_rad = angle_rad(index_pkmarker);
                     PeakMarker_angle_deg = angle_deg(index_pkmarker);
-                    log_buff = [log_buff, sprintf("Peak Marker :\t\t\t %.1f [dBi] at %.1f[deg]", PeakMarker_gain_dBi, PeakMarker_angle_deg)]; 
                 end
 
                 % calculate a total-gain chart.
@@ -139,6 +138,9 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
 
         if(enGainTotal==true)
             polarplot(ax, angle_rad([1:end 1]),antenna_gain_dBi_total([1:end 1]),'Color', [0 0 0], 'LineStyle','--', 'LineWidth',0.5, 'DisplayName', 'Total gain');
+            log_buff = [log_buff, sprintf("Argument option [enGainTotal]: Enabled.") ]; 
+        else
+            log_buff = [log_buff, sprintf("Argument option [enGainTotal]: Disabled.") ]; 
         end
 
         % === placing a peak marker.
@@ -146,6 +148,9 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
             buf_legend = sprintf("Peak gain %.1f dBi @ %d \\circ", PeakMarker_gain_dBi, PeakMarker_angle_deg);
             %polarplot(ax, PeakMarker_angle_rad, PeakMarker_gain_dBi, 'Marker', 'o', 'DisplayName', buf_legend);
             polarplot(ax, PeakMarker_angle_rad, PeakMarker_gain_dBi, 'Color', [0 0.4470 0.7410], 'LineStyle', '-', 'Marker', 'o', 'DisplayName', buf_legend);
+            log_buff = [log_buff, sprintf("Peak Marker :\t\t\t %.1f [dBi] at %.1f[deg]", PeakMarker_gain_dBi, PeakMarker_angle_deg)]; 
+        else
+            log_buff = [log_buff, sprintf("Peak Marker :\t\t\t Disabled.")]; 
         end
 
         savefilename = sprintf("%s_%0.1fMHz",replace(filenames(1),".csv",""),freq_plan(m));
@@ -154,6 +159,7 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
             mkdir(file_output);
         end
 
+        %% Exporting a log file
         writelines(log_buff, file_output+"/"+savefilename+"_log.txt");
 
         %% .png file write -----
