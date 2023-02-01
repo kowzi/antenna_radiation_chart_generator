@@ -15,7 +15,7 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
     %line_styles = {"b-" "Color" "[0 0 1]" "LineWidth" 2; "b-" "Color" "[0 0 0]" "LineWidth" 1;};
 
 
-    datetime.setDefaultFormats('default','yyyy/mm/dd HH:MM:SS');
+    datetime.setDefaultFormats('default','yyyy/MM/dd HH:mm:SS');
 
 %    for m=1:1:length(freq_plan)
     parfor m=1:length(freq_plan)
