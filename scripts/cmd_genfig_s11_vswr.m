@@ -46,34 +46,73 @@ function cmd_genfig_s11_vswr(inout_dir, filenames, cmdXlim, format_style, savefo
     end
 
     %title(buff_title);
-    xlabel('Frequency (GHz)','FontWeight','bold','FontName','Times New Roman')
-    ylabel('|S_{11}| (VSWR)'  ,'FontWeight','bold','FontName','Times New Roman')
-    legend(cmdLegendTexts,'Location','southoutside');
-    
-    xlim([xlim_min xlim_max]);
-    ylim([1 11]);
-    yticklabels([1 2 3 4 5 6 7 8 9 10 11]);
    
     if(contains(format_style,"ieee"))
+        text_font = 'Times New Roman';
+
+        xlabel('Frequency (GHz)','FontWeight','bold','FontName',text_font);
+        ylabel('|S_{11}| (VSWR)'  ,'FontWeight','bold','FontName',text_font);
+        legend(cmdLegendTexts,'Location','southoutside');
+        xlim([xlim_min xlim_max]);
+        ylim([1 11]);
+        yticklabels([1 2 3 4 5 6 7 8 9 10 11]);
+        
         ax = gca;   % set the aexes property to ax.
-        set(ax,'FontName','Times New Roman','XMinorGrid','off','YMinorGrid','off','ZMinorGrid','off','FontSize',19,'FontWeight','bold','LineWidth',1,'ZGrid','on', 'XTick', xlim_min:1:xlim_max);
+        set(ax,'FontName', text_font, 'XMinorGrid','off','YMinorGrid','off','ZMinorGrid','off','FontSize',19,'FontWeight','bold','LineWidth',1,'ZGrid','on', 'XTick', xlim_min:1:xlim_max);
         ax.ColorOrder = cmdColorOrder;
         %ax.LineStyleOrder = {'-','-'};
         box on;
         axis on;
         grid off;
+
+        f.Position = [0 0 650 650];
+        %daspect([1 1 1]);
+        pbaspect([1 1 1]);
+    elseif(contains(format_style,"pptx"))
+        text_font = 'Calibri';
+
+        xlabel('Frequency (GHz)','FontWeight','bold','FontName',text_font);
+        ylabel('|S_{11}| (VSWR)'  ,'FontWeight','bold','FontName',text_font);
+        legend(cmdLegendTexts,'Location','southoutside');
+        xlim([xlim_min xlim_max]);
+        ylim([1 11]);
+        yticklabels([1 2 3 4 5 6 7 8 9 10 11]);
+
+        ax = gca;   % set the aexes property to ax.
+        set(ax,'FontName', text_font, 'XMinorGrid','off','YMinorGrid','off','ZMinorGrid','off','FontSize',15,'FontWeight','bold','LineWidth',1,'ZGrid','on', 'XTick', xlim_min:1:xlim_max);
+        ax.ColorOrder = cmdColorOrder;
+        %ax.LineStyleOrder = {'-','-'};
+        box on;
+        axis on;
+        grid off;
+
+        f.Position = [0 0 650 650];
+        %daspect([1 1 1]);
+        %pbaspect([1 1 1]);
+        %ax.DataAspectRatio=[0.4 1 1];
+
     else
+        text_font = 'Times New Roman';
+
+        xlabel('Frequency (GHz)','FontWeight','bold','FontName',text_font);
+        ylabel('|S_{11}| (VSWR)'  ,'FontWeight','bold','FontName',text_font);
+        legend(cmdLegendTexts,'Location','southoutside');
+        xlim([xlim_min xlim_max]);
+        ylim([1 11]);
+        yticklabels([1 2 3 4 5 6 7 8 9 10 11]);
+
         ax = gca;   % set the aexes property to ax.
         set(ax,'FontSize',19,'LineWidth',1,'XTick', xlim_min:1:xlim_max);
         box on;
         axis on;
         grid on;
         grid minor;
+
+        f.Position = [0 0 650 650];
+        %daspect([1 1 1]);
+        pbaspect([1 1 1]);
     end
 
-    f.Position = [0 0 650 650];
-    %daspect([1 1 1]);
-    pbaspect([1 1 1]);
 
     savefilename = replace(filenames(1),".","");
     output_dir_filename = inout_dir+"/"+savefilename;
