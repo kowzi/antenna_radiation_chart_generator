@@ -7,6 +7,8 @@ function cmd_genfig_polar_sql_comparison(input_sqlite, output_dir, filenames, fr
 %   saveformat      ... output file format. ex. = [".png"; ".emf"; ".fig"; ".csv";];
 %   alt_filenames   ... alternate filename used for the legend. ex. = ["Proposed 1"; "Proposed 2";];
 %   cmdCircShift    ... by using cifcshift() to rotate the data with certain degree.
+
+%   enGainTotal     ... True: Calculate the gain from both two input data.
     
     rlim_min = -30;
     rlim_max = 10;
