@@ -34,7 +34,9 @@ function cmd_proc_import_antrad_hfss_csv(filename_db, csv_filepath_names, db_tab
         buff_table(:,"frequency_MHz")   = round(buff_table(:,"frequency_MHz").*1000, 0);                            % convert GHz to MHz and round with 0
         file_date_unixepoch             = transpose(repelem(csv_posixtime,      length(buff_table.frequency_MHz)));
         file_name                       = transpose(repelem(csv_filename_ext,   length(buff_table.frequency_MHz)));
-        buff_table                      = addvars(buff_table,file_date_unixepoch,'Before',"frequency_MHz");         % add variable
+        data_type                       = transpose(repelem("hfss",             length(buff_table.angle)));
+        buff_table                      = addvars(buff_table,data_type,          'Before',"frequency_MHz");         % add variable
+        buff_table                      = addvars(buff_table,file_date_unixepoch,'Before',"data_type");             % add variable
         buff_table                      = addvars(buff_table,file_name,          'Before',"file_date_unixepoch");   % add variable
 
         if angle_select == "phi"

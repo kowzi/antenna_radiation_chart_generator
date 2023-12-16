@@ -1,0 +1,7 @@
+# Extract below 
+msg = "dB(RealizedGainPhi) [] - Freq='3.607GHz' Theta='0deg'";
+msgs = regexp(msg, '''([^'']*)''', 'match');
+msgs(1)
+replace(msgs,"'","");
+replace(msgs,"GHz"");
+replace(msgs,"deg"");

@@ -1,0 +1,20 @@
+fp = fopen('e-plane_separate-col.csv');
+varNames = strsplit(fgetl(fp),',');
+fclose(fp);
+
+#   Checker: Lab measurement
+##   "! CH1_S11_1 S21 MLOG" in the first colomun
+
+contains(varNames(1),"! CH1_S11_1 S21 MLOG");
+
+
+#   Checker: Type HFSS Single-frequency radiation chart
+## "Freq [GHz]" in the 1st colomun.
+
+contains(varNames(1),"Freq [GHz]");
+
+
+#   Checker: Type HFSS Multiple-frequency radiation chart
+## "Phi [deg]" in the 1st colomun.
+
+contains(varNames(1),"Phi [deg]");
