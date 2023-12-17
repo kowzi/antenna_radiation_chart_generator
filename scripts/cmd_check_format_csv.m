@@ -13,11 +13,11 @@ function [csvtype] = cmd_check_format_csv(csv_filepath_name)
     
     % 1st line check:
     if contains(varNames(1),"! CH1_S11_1 S21 MLOG")
-        csvtype = "LabMeasKIT";
+        csvtype = "Meas_KITLab";
     elseif contains(varNames(1),"Freq [GHz]")
-        csvtype = "HFSS-SingleFreq";
+        csvtype = "Sim_HFSS-SingleFreq";
     elseif contains(varNames(1),"Phi [deg]") || contains(varNames(1),"Theta [deg]")
-        csvtype = "HFSS-MultiFreq";
+        csvtype = "Sim_HFSS-MultiFreq";
     else
         csvtype = "unknown";
     end
