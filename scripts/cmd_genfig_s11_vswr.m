@@ -48,7 +48,8 @@ function cmd_genfig_s11_vswr(inout_dir, filenames, cmdXlim, format_style, savefo
     end
 
     %title(buff_title);
-   
+
+    % -- Format/Style Setting --
     if(contains(format_style,"ieee"))
         text_font = 'Times New Roman';
 

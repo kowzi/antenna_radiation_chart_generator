@@ -38,7 +38,11 @@ function cmd_proc_import_sitedata(filename_db, site_name, site_s2p, frequency_st
     % ======================================================================================
     % Step 2 : Importing to Sqlite3
     % ======================================================================================
-    conn = sqlite(filename_db,"create");      % auto-commit mode
+    if isfile(filename_db)
+        conn = sqlite(filename_db);
+    else
+        conn = sqlite(filename_db, "create");
+    end
     
     site_id = transpose(repelem(site_name, length(sp_freq_MHz_interp)));
     %data = table(site_id, sp_freq_MHz_interp,sp_s11_dB_interp,sp_s21_dB_interp,'VariableNames',["Site_ID", "frequency_MHz" "s11_dB" "s21_dB"]);

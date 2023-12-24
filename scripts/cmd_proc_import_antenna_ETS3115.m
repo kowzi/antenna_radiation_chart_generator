@@ -35,7 +35,12 @@ function cmd_proc_import_antenna_ETS3115(filename_db, input_antenna_dir, frequen
     % =======================================================================
     % Importing to SQLite3 db.
     % =======================================================================
-    conn = sqlite(filename_db);      % auto-commit mode
+    if isfile(filename_db)
+        conn = sqlite(filename_db);
+    else
+        conn = sqlite(filename_db, "create");
+    end
+
     %conn = sqlite('TAR-3115_Dataset.db','create');      % auto-commit mode
     
     data = table(transpose(Data_1mV_Interp_Freq),transpose(Data_1mV_Interp_Gain_dBi),'VariableNames',["frequency_MHz" "gain_dBi"]);
