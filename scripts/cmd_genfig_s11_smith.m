@@ -15,7 +15,8 @@ function cmd_genfig_s11_smith(inout_dir, filenames, alternate_filename, cmdXlim_
     f=figure;
     hold on;
 
-    sp0_org         = sparameters(append(inout_dir,"/",filenames(1)));
+    %sp0_org = sparameters(append(inout_dir,"/",filenames(1)));
+    sp0_org = sparameters(filenames(1));
     sp0_freq_org    = sp0_org.Frequencies;
     sp0_freq        = sp0_freq_org(1):1e6:sp0_freq_org(end);        % New frequency plan for the interpolation with 1 MHz
     sp0             = rfinterp1(sp0_org, sp0_freq);                 % Interpolation process
@@ -45,7 +46,9 @@ function cmd_genfig_s11_smith(inout_dir, filenames, alternate_filename, cmdXlim_
     %daspect([1 1 1]);
     pbaspect([1 1 1]);    
 
-    savefilename = replace(filenames(1),".","");
+    %savefilename = replace(filenames(1),".","");
+    [~,savefilename,~] = fileparts(filenames(1));
+    savefilename = string(savefilename);
     output_dir_filename = inout_dir+"/"+savefilename;
 
     if not(exist(output_dir_filename,"dir"))

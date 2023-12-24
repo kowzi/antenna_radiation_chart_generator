@@ -19,8 +19,11 @@ function cmd_genfig_s11_zparam(inout_dir, filenames, alternate_filenames, cmdXli
     hold on;
 
     for n=1:1:length(filenames)
-        sp0_org = sparameters(append(inout_dir,"/",filenames(n)));
-        zp0_org = zparameters(append(inout_dir,"/",filenames(n)));       % https://jp.mathworks.com/help/rf/ref/zparameters.html
+        %sp0_org = sparameters(append(inout_dir,"/",filenames(n)));
+        sp0_org = sparameters(filenames(n));
+        %zp0_org = zparameters(append(inout_dir,"/",filenames(n)));       % https://jp.mathworks.com/help/rf/ref/zparameters.html
+        zp0_org = zparameters(filenames(n));
+
         sp0_freq_org = sp0_org.Frequencies;
         sp0_freq = sp0_freq_org(1):1e6:sp0_freq_org(end);   % New frequency plan for the interpolation with 1 MHz
         zp0 = rfinterp1(zp0_org, sp0_freq);
@@ -66,7 +69,10 @@ function cmd_genfig_s11_zparam(inout_dir, filenames, alternate_filenames, cmdXli
     %daspect([1 1 1]);
     pbaspect([1 1 1]);
 
-    savefilename = replace(filenames(1),".","");
+    %savefilename = replace(filenames(1),".","");
+    [~,savefilename,~] = fileparts(filenames(1));
+    savefilename = string(savefilename);
+    
     output_dir_filename = inout_dir+"/"+savefilename;
     if not(exist(output_dir_filename,"dir"))
         mkdir(output_dir_filename);
